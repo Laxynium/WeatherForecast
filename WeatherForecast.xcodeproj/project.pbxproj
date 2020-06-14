@@ -21,6 +21,8 @@
 		C65C4E74249577260050FB5D /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65C4E73249577260050FB5D /* SplitViewController.swift */; };
 		C6D5119B249665CD00A81F73 /* CitiesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5119A249665CD00A81F73 /* CitiesController.swift */; };
 		C6D5119F249687FC00A81F73 /* CitiesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5119E249687FC00A81F73 /* CitiesService.swift */; };
+		C6D511A32496C16F00A81F73 /* SearchCityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D511A22496C16F00A81F73 /* SearchCityController.swift */; };
+		C6D511A52496D10B00A81F73 /* CitiesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D511A42496D10B00A81F73 /* CitiesStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +42,8 @@
 		C65C4E73249577260050FB5D /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		C6D5119A249665CD00A81F73 /* CitiesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesController.swift; sourceTree = "<group>"; };
 		C6D5119E249687FC00A81F73 /* CitiesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesService.swift; sourceTree = "<group>"; };
+		C6D511A22496C16F00A81F73 /* SearchCityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCityController.swift; sourceTree = "<group>"; };
+		C6D511A42496D10B00A81F73 /* CitiesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +91,8 @@
 				C65C4E73249577260050FB5D /* SplitViewController.swift */,
 				C6D5119A249665CD00A81F73 /* CitiesController.swift */,
 				C6D5119E249687FC00A81F73 /* CitiesService.swift */,
+				C6D511A22496C16F00A81F73 /* SearchCityController.swift */,
+				C6D511A42496D10B00A81F73 /* CitiesStorage.swift */,
 			);
 			path = WeatherForecast;
 			sourceTree = "<group>";
@@ -166,9 +172,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6D511A32496C16F00A81F73 /* SearchCityController.swift in Sources */,
 				C656912024916347007D4C19 /* WeatherService.swift in Sources */,
 				C651D80D24942C1B0028C7CF /* UIImageViewExtension.swift in Sources */,
 				C651D80B249426D00028C7CF /* DateExtension.swift in Sources */,
+				C6D511A52496D10B00A81F73 /* CitiesStorage.swift in Sources */,
 				C64FF8932494EABC00800C71 /* WeatherTableController.swift in Sources */,
 				C657AF9A2418218B0072454A /* ViewController.swift in Sources */,
 				C65C4E74249577260050FB5D /* SplitViewController.swift in Sources */,

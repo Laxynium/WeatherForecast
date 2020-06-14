@@ -15,26 +15,41 @@ protocol CitySelectionDelegate: class {
 
 class CitiesController : UITableViewController{
     weak var cityDelegate: CitySelectionDelegate?
-    
+    weak var searchCityController: SearchCityController?
+    private let citiesService: CitiesService
+    @IBAction func onAddCity(_ sender: Any) {
+        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+        guard let controller = storyBoard.instantiateViewController(withIdentifier: "SearchCityController") as? SearchCityController
+        else{
+            return
+        }
+        navigationController?.pushViewController(controller, animated: true)
+    }
     private var cities:[City] = [
     ]
     required init?(coder: NSCoder) {
+        self.citiesService = CitiesService()
         super.init(coder: coder)
-        let ids = ["44418", "2487956", "2487796"]
-        let service = CitiesService()
         
-        service.getCitiesData(ids: ids)
-        .observe(using: {r in
-            switch r {
-                case .success(let cities):
-                    self.cities = cities.filter({c in c != nil}).map({c in c!})
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                case .failure(let error):
-                    debugPrint(error)
-            }
+        let ids = CitiesStorage.instance.getIds()
+        getCitiesData(ids: ids)
+        CitiesStorage.instance.subscribe(onChange: {newIds in
+            self.getCitiesData(ids: newIds)
         })
+    }
+    private func getCitiesData(ids:[Int]){
+        citiesService.getCitiesData(ids: ids.map({id in "\(id)"}))
+               .observe(using: {r in
+                   switch r {
+                       case .success(let cities):
+                           self.cities = cities.filter({c in c != nil}).map({c in c!})
+                           DispatchQueue.main.async {
+                               self.tableView.reloadData()
+                           }
+                       case .failure(let error):
+                           debugPrint(error)
+                   }
+               })
     }
     override func tableView(
       _ tableView: UITableView,

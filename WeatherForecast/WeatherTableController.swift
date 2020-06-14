@@ -43,6 +43,7 @@ class WeatherTableController : UITableViewController {
            loadData()
         }
     }
+
     private func fetchData() {
         let today = Date();
         date.text = today.toString()

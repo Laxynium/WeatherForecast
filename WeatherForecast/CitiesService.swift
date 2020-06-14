@@ -33,6 +33,23 @@ extension City {
     }
 }
 
+struct SimpleCity{
+    let id: String
+    let name: String
+}
+
+extension SimpleCity {
+    init?(json: [String: Any]){
+        guard let id =  json["woeid"] as? Int,
+            let title = json["title"] as? String
+        else {
+            return nil
+        }
+        self.id = "\(id)"
+        self.name = title
+    }
+}
+
 class CitiesService
 {
     private let urlBase = "https://www.metaweather.com/api/location"
@@ -45,6 +62,22 @@ class CitiesService
                 self.responseHandler(data)
             })})
         return toFuture(list: cities)
+    }
+    
+    func searchCity(name:String) -> Future<[SimpleCity?]>{
+        let url = "\(urlBase)/search?query=\(name)"
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: " ", with: "%20")
+        
+        return self.toTask(url: URL(string:url)!)
+        .transformed(with: {(data) -> [SimpleCity?] in
+            if let json = try? JSONSerialization.jsonObject(with: data, options: []){
+                if let array = json as? [[String:Any]]{
+                    return array.map({el in SimpleCity(json: el)})
+                }
+            }
+            return []
+        })
     }
     
     private func responseHandler(_ data: Data?) -> City?{
