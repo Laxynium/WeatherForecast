@@ -12,6 +12,12 @@ import UIKit
 class WeatherTableController : UITableViewController {
     private var weatherForDays:[WeatherInfo?] = []
     private var currentWeather:Int = 0;
+    var cityId: String? = "523920" {
+        didSet {
+            loadViewIfNeeded()
+            fetchData()
+        }
+    }
     
     @IBOutlet weak var date: UILabel!
     @IBOutlet weak var prevBtn: UIButton!
@@ -37,22 +43,30 @@ class WeatherTableController : UITableViewController {
            loadData()
         }
     }
+    private func fetchData() {
+        let today = Date();
+        date.text = today.toString()
+        let weatherForDays = WeatherService().getForNextDays(cityId!, today)
+        weatherForDays.observe(using: {r in
+            switch r {
+            case .success(let wI):
+                self.weatherForDays = wI.sorted(by: {a,b in
+                    return a!.date <= b!.date
+                })
+                self.loadData();
+            case .failure(let error):
+                debugPrint(error)
+            }
+        })
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-         let today = Date();
-         date.text = today.toString()
-         let weatherForDays = WeatherService().getForNextDays(today)
-         weatherForDays.observe(using: {r in
-         switch r {
-              case .success(let wI):
-                  self.weatherForDays = wI.sorted(by: {a,b in
-                      return a!.date <= b!.date
-                  })
-                  self.loadData();
-              case .failure(let error):
-                  debugPrint(error)
-          }
-        })
+        fetchData()
+    }
+    
+    public func changeCity(_ city: City?){
+        self.cityId = city?.id
     }
     
     private func loadData(){
@@ -62,15 +76,14 @@ class WeatherTableController : UITableViewController {
                 self.date.text = weather?.date.toString()
                 self.weatherState.text = weather?.weatherStateName
                 self.weatherImg.load(url: URL(string: weather!.weatherStateImg)!)
-                self.maxTemp.text = String(format:"%.2f",weather!.maxTemp)
-                self.minTemp.text = String(format:"%.2f",weather!.minTemp)
+                self.maxTemp.text = String(format:"%.2f ℃",weather!.maxTemp)
+                self.minTemp.text = String(format:"%.2f ℃",weather!.minTemp)
                 self.windSpeed.text = String(format:"%.2f",weather!.windSpeed)
                 self.windDirection.text = String(weather!.windDirection)
                 self.humidity.text = String(format:"%.2f",weather!.humidity)
                 self.pressure.text = String(format:"%.2f",weather!.airPressure)
             }
-           
-            
+             
             if(self.currentWeather == 0){
                 self.prevBtn.isEnabled = false;
             }else{
@@ -83,5 +96,11 @@ class WeatherTableController : UITableViewController {
                 self.nextBtn.isEnabled = true;
             }
         }
+    }
+}
+
+extension WeatherTableController : CitySelectionDelegate{
+    func citySelected(_ newCity: City) {
+        self.changeCity(newCity)
     }
 }

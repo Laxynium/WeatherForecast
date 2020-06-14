@@ -9,8 +9,20 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    private var controller: WeatherTableController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue,
+                 sender: Any?){
+        super.prepare(for: segue, sender: sender)
+        
+        if(segue.identifier == "weatherTable"){
+            self.controller =  segue.destination as? WeatherTableController
+        }
     }
 }
 

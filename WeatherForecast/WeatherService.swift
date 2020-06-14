@@ -49,29 +49,15 @@ extension WeatherInfo {
 
 class WeatherService
 {
-    private let urlBase = "https://www.metaweather.com/api/location/523920"
-    func getForNextDays(_ today:Date)->Future<[WeatherInfo?]>{
+    private let urlBase = "https://www.metaweather.com/api/location"
+    func getForNextDays(_ cityId:String, _ today:Date)->Future<[WeatherInfo?]>{
         let dates = getDates(today)
-            .map(toUrl)
+            .map({d in self.toUrl(cityId: cityId, date: d)})
             .map(toTask)
             .map({(future:Future<Data>) in
                 future.transformed(with: responseHandler)
             });
-        var count = dates.count
-        var underlayingData:[WeatherInfo?] = []
-        let promise = Promise<[WeatherInfo?]>();
-        dates.forEach({f in
-            f.observe(using: {r in
-                count-=1;
-                let _ = r.map({wI in
-                    underlayingData.append(wI)
-                    if(count == 0){
-                        promise.resolve(with: underlayingData)
-                    }
-                })
-            })
-        })
-        return promise;
+        return toFuture(list: dates)
     }
     private func responseHandler(_ data: Data?) -> WeatherInfo?{
         if let json = try? JSONSerialization.jsonObject(with: data!, options: []){
@@ -98,8 +84,8 @@ class WeatherService
         return promise
         
     }
-    private func toUrl(date: String)->URL{
-        return URL(string: "\(urlBase)/\(date)")!
+    private func toUrl(cityId: String,  date: String)->URL{
+        return URL(string: "\(urlBase)/\(cityId)/\(date)")!
     }
     private func getDates(_ today:Date)->[String]{
         let dates = [today, addDay(today,1), addDay(today,2)]

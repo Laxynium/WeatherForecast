@@ -79,6 +79,24 @@ extension Future {
     }
 }
 
+func toFuture<T>(list: [Future<T>])->Future<[T]>{
+    var count = list.count;
+    var underlayingData:[T] = []
+    let promise = Promise<[T]>();
+    list.forEach({elem in
+        elem.observe(using: {r in
+            count-=1;
+            let _ = r.map({wI in
+                underlayingData.append(wI)
+                if(count == 0){
+                    promise.resolve(with: underlayingData)
+                }
+            })
+        })
+    })
+    return promise;
+}
+
 class Promise<Value>: Future<Value> {
     init(value: Value? = nil) {
         super.init()
